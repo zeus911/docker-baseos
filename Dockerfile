@@ -5,8 +5,8 @@ MAINTAINER pinguoops <pinguo-ops@camera360.com>
 # Install Software & Libraries
 # -----------------------------------------------------------------------------
 # Disabled selinux
-RUN /usr/sbin/setenforce 0 \
-	&& sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
+#RUN /usr/sbin/setenforce 0 \
+#	&& sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
 	
 ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /root/
 RUN rpm -Uvh /root/epel-release-6-8.noarch.rpm
