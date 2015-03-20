@@ -55,11 +55,11 @@ RUN yum -y install \
 
 # config history time
 
-RUN cat >> /etc/bashrc << EOF \
-HISTFILESIZE=2000 \
-HISTSIZE=2000 \
-HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S " \
-export HISTTIMEFORMAT \
+RUN cat >> /etc/bashrc << 'EOF' \
+	HISTFILESIZE=2000 \
+	HISTSIZE=2000 \
+	HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S " \
+	export HISTTIMEFORMAT \
 EOF
 
 
