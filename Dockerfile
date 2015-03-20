@@ -55,12 +55,12 @@ RUN yum -y install \
 
 # config history time
 
-RUN cat >> /etc/bashrc << 'EOF' \
-	HISTFILESIZE=2000 \
-	HISTSIZE=2000 \
-	HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S " \
-	export HISTTIMEFORMAT \
-EOF
+#RUN cat >> /etc/bashrc << EOF \
+#	HISTFILESIZE=2000 \
+#	HISTSIZE=2000 \
+#	HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S " \
+#	export HISTTIMEFORMAT \
+#EOF
 
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
@@ -96,49 +96,7 @@ RUN yum -y install ntp \
 	&& /sbin/service ntpdate stop
 
 
-# Optimization kernel
-RUN cat >> /etc/sysctl.conf << EOF \
-# Add
-net.ipv4.tcp_max_syn_backlog = 65536 \
-net.core.netdev_max_backlog =  60000 \
-net.core.somaxconn = 60000 \
 
-net.core.wmem_default = 67108864 \
-net.core.rmem_default = 67108864 \
-net.core.rmem_max = 134217728 \
-net.core.wmem_max = 134217728 \
-
-net.ipv4.tcp_timestamps = 0 \
-net.ipv4.tcp_synack_retries = 2 \
-net.ipv4.tcp_syn_retries = 2 \
-
-net.ipv4.tcp_tw_recycle = 1 \
-#net.ipv4.tcp_tw_len = 1 \
-net.ipv4.tcp_tw_reuse = 1 \
-
-net.ipv4.tcp_mem = 94500000 915000000 927000000 \
-net.ipv4.tcp_rmem = 4096 87380 33554432 \
-net.ipv4.tcp_wmem = 4096 65536 33554432 \
-net.ipv4.tcp_max_orphans = 3276800 \
-
-net.ipv4.tcp_fin_timeout = 10 \
-net.ipv4.tcp_keepalive_time = 10 \
-net.ipv4.ip_local_port_range = 1024  65535 \
-
-net.ipv4.tcp_max_tw_buckets = 10000 \
-
-net.ipv4.tcp_max_syn_backlog = 8192000 \
-
-net.nf_conntrack_max = 6553600 \
-net.netfilter.nf_conntrack_max = 6553600 \
-net.netfilter.nf_conntrack_tcp_timeout_established = 120 \
-net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120 \
-net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60 \
-net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120 \
-vm.zone_reclaim_mode = 1 \
-EOF
-
-RUN /sbin/sysctl -p
 
 # optimize kernel
 RUN echo 0 > /proc/sys/net/ipv4/tcp_syncookies \
@@ -147,13 +105,13 @@ RUN echo 0 > /proc/sys/net/ipv4/tcp_syncookies \
 	&& echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag
 
 # add optimize kernel
-RUN cat >> /etc/rc.local << EOF \
+#RUN cat >> /etc/rc.local << EOF \
 # Add
-echo 0 > /proc/sys/net/ipv4/tcp_syncookies \
-echo 0 > /proc/sys/vm/zone_reclaim_mode \
-echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag \
-echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag \
-EOF
+#echo 0 > /proc/sys/net/ipv4/tcp_syncookies \
+#echo 0 > /proc/sys/vm/zone_reclaim_mode \
+#echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag \
+#echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag \
+#EOF
 
 	
 # -----------------------------------------------------------------------------
