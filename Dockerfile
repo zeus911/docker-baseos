@@ -84,8 +84,8 @@ RUN	sed -i "/# End of file/i\\* soft nofile 65536" /etc/security/limits.conf \
 	
 # set vm.overcommit_memory
 
-RUN sysctl vm.overcommit_memory=1 \
-	&& sed -i '$a \\nvm.overcommit_memory = 1' /etc/sysctl.conf	
+#RUN sysctl vm.overcommit_memory=1 \
+#	&& sed -i '$a \\nvm.overcommit_memory = 1' /etc/sysctl.conf	
 
 
 # config time service
