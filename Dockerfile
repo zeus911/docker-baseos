@@ -47,21 +47,6 @@ RUN yum -y install \
 # -----------------------------------------------------------------------------
 # Configure, timezone/sshd/passwd/networking
 # -----------------------------------------------------------------------------
-#RUN cat > /etc/sysconfig/clock << EOF \
-#ZONE=Asia/Shanghai \
-#UTC=false \
-#ARC=false \
-#EOF
-
-# config history time
-
-#RUN cat >> /etc/bashrc << EOF \
-#	HISTFILESIZE=2000 \
-#	HISTSIZE=2000 \
-#	HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S " \
-#	export HISTTIMEFORMAT \
-#EOF
-
 
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && sed -i \
@@ -81,11 +66,7 @@ RUN	sed -i "/# End of file/i\\* soft nofile 65536" /etc/security/limits.conf \
 	&& sed -i "/# End of file/i\\* soft nproc 10240" /etc/security/limits.conf \
 	&& sed -i "/# End of file/i\\* hard nproc 10240" /etc/security/limits.conf \
 	&& sed -i "s/^\(*          soft    nproc     1024\)/#\1/" /etc/security/limits.d/90-nproc.conf	
-	
-# set vm.overcommit_memory
-
-#RUN sysctl vm.overcommit_memory=1 \
-#	&& sed -i '$a \\nvm.overcommit_memory = 1' /etc/sysctl.conf	
+		
 
 
 # config time service
@@ -95,23 +76,6 @@ RUN yum -y install ntp \
 	&& /sbin/service ntpd start \
 	&& /sbin/service ntpdate stop
 
-
-
-
-# optimize kernel
-RUN echo 0 > /proc/sys/net/ipv4/tcp_syncookies \
-	&& echo 0 > /proc/sys/vm/zone_reclaim_mode \
-	&& echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag \
-	&& echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag
-
-# add optimize kernel
-#RUN cat >> /etc/rc.local << EOF \
-# Add
-#echo 0 > /proc/sys/net/ipv4/tcp_syncookies \
-#echo 0 > /proc/sys/vm/zone_reclaim_mode \
-#echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag \
-#echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag \
-#EOF
 
 	
 # -----------------------------------------------------------------------------
