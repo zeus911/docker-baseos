@@ -47,11 +47,11 @@ RUN yum -y install \
 # -----------------------------------------------------------------------------
 # Configure, timezone/sshd/passwd/networking
 # -----------------------------------------------------------------------------
-RUN cat > /etc/sysconfig/clock << EOF \
-ZONE=Asia/Shanghai \
-UTC=false \
-ARC=false \
-EOF
+#RUN cat > /etc/sysconfig/clock << EOF \
+#ZONE=Asia/Shanghai \
+#UTC=false \
+#ARC=false \
+#EOF
 
 # config history time
 
