@@ -9,7 +9,7 @@ MAINTAINER pinguoops <pinguo-ops@camera360.com>
 #	&& sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
 	
 ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /tmp/
-RUN rpm -Uvh /root/epel-release-6-8.noarch.rpm
+RUN rpm -Uvh /tmp/epel-release-6-8.noarch.rpm
 
 RUN yum -y install \
     gcc gcc-c++ tcl \
