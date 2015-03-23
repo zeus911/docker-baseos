@@ -89,9 +89,7 @@ RUN mv /etc/sysctl.conf /etc/sysctl.conf.bak \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120' >> /etc/sysctl.conf \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60' >> /etc/sysctl.conf \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120' >> /etc/sysctl.conf \
-	&& echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf
-
-RUN \
+	&& echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf \
 	&& echo '# Add' >> /etc/rc.local \
 	&& echo 'echo 0 > /proc/sys/net/ipv4/tcp_syncookies' >> /etc/rc.local \
 	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
