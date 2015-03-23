@@ -59,8 +59,7 @@ RUN yum -y install ntp \
 	&& /sbin/service ntpdate stop
 
 
-RUN \
-mv /etc/sysctl.conf /etc/sysctl.conf.bak \
+RUN mv /etc/sysctl.conf /etc/sysctl.conf.bak \
 echo '# Optimization kernel' > /etc/sysctl.conf \
 echo 'net.ipv4.tcp_max_syn_backlog = 65536' >> /etc/sysctl.conf \
 echo 'net.core.netdev_max_backlog =  60000' >> /etc/sysctl.conf \
@@ -91,8 +90,6 @@ echo 'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120' >> /etc/sysctl.con
 echo 'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60' >> /etc/sysctl.conf \
 echo 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120' >> /etc/sysctl.conf \
 echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf \
-cat /etc/sysctl.conf \
-/sbin/sysctl -p
 
 RUN \
 echo '# Add' >> /etc/rc.local \
