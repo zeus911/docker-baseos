@@ -39,8 +39,8 @@ RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
         -e 's/^#UseDNS yes/UseDNS no/g' \
         /etc/ssh/sshd_config \
     && echo "root" | passwd --stdin root \
-    && ssh-keygen -q -b 2048 -N '' -t rsa -f /etc/ssh/ssh_host_rsa_key \
-    && ssh-keygen -q -b 2048 -N '' -t dsa -f /etc/ssh/ssh_host_dsa_key \
+    && ssh-keygen -q -b 1024 -N '' -t rsa -f /etc/ssh/ssh_host_rsa_key \
+    && ssh-keygen -q -b 1024 -N '' -t dsa -f /etc/ssh/ssh_host_dsa_key \
     && echo "NETWORKING=yes" > /etc/sysconfig/network
 
 # set system limits
