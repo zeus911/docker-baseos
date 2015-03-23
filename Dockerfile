@@ -60,43 +60,43 @@ RUN yum -y install ntp \
 
 
 RUN mv /etc/sysctl.conf /etc/sysctl.conf.bak \
-echo '# Optimization kernel' > /etc/sysctl.conf \
-echo 'net.ipv4.tcp_max_syn_backlog = 65536' >> /etc/sysctl.conf \
-echo 'net.core.netdev_max_backlog =  60000' >> /etc/sysctl.conf \
-echo 'net.core.somaxconn = 60000' >> /etc/sysctl.conf \
-echo 'net.core.wmem_default = 67108864' >> /etc/sysctl.conf \
-echo 'net.core.rmem_default = 67108864' >> /etc/sysctl.conf \
-echo 'net.core.rmem_max = 134217728' >> /etc/sysctl.conf \
-echo 'net.core.wmem_max = 134217728' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_timestamps = 0' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_synack_retries = 2' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_syn_retries = 2' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_tw_recycle = 1' >> /etc/sysctl.conf \
-echo '#net.ipv4.tcp_tw_len = 1' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_tw_reuse = 1' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_mem = 94500000 915000000 927000000' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_rmem = 4096 87380 33554432' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_wmem = 4096 65536 33554432' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_max_orphans = 3276800' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_fin_timeout = 10' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_keepalive_time = 10' >> /etc/sysctl.conf \
-echo 'net.ipv4.ip_local_port_range = 1024  65535' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_max_tw_buckets = 10000' >> /etc/sysctl.conf \
-echo 'net.ipv4.tcp_max_syn_backlog = 8192000' >> /etc/sysctl.conf \
-echo 'net.nf_conntrack_max = 6553600' >> /etc/sysctl.conf \
-echo 'net.netfilter.nf_conntrack_max = 6553600' >> /etc/sysctl.conf \
-echo 'net.netfilter.nf_conntrack_tcp_timeout_established = 120' >> /etc/sysctl.conf \
-echo 'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120' >> /etc/sysctl.conf \
-echo 'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60' >> /etc/sysctl.conf \
-echo 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120' >> /etc/sysctl.conf \
-echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf \
+	&& echo '# Optimization kernel' > /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_max_syn_backlog = 65536' >> /etc/sysctl.conf \
+	&& echo 'net.core.netdev_max_backlog =  60000' >> /etc/sysctl.conf \
+	&& echo 'net.core.somaxconn = 60000' >> /etc/sysctl.conf \
+	&& echo 'net.core.wmem_default = 67108864' >> /etc/sysctl.conf \
+	&& echo 'net.core.rmem_default = 67108864' >> /etc/sysctl.conf \
+	&& echo 'net.core.rmem_max = 134217728' >> /etc/sysctl.conf \
+	&& echo 'net.core.wmem_max = 134217728' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_timestamps = 0' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_synack_retries = 2' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_syn_retries = 2' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_tw_recycle = 1' >> /etc/sysctl.conf \
+	&& echo '#net.ipv4.tcp_tw_len = 1' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_tw_reuse = 1' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_mem = 94500000 915000000 927000000' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_rmem = 4096 87380 33554432' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_wmem = 4096 65536 33554432' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_max_orphans = 3276800' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_fin_timeout = 10' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_keepalive_time = 10' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.ip_local_port_range = 1024  65535' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_max_tw_buckets = 10000' >> /etc/sysctl.conf \
+	&& echo 'net.ipv4.tcp_max_syn_backlog = 8192000' >> /etc/sysctl.conf \
+	&& echo 'net.nf_conntrack_max = 6553600' >> /etc/sysctl.conf \
+	&& echo 'net.netfilter.nf_conntrack_max = 6553600' >> /etc/sysctl.conf \
+	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_established = 120' >> /etc/sysctl.conf \
+	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120' >> /etc/sysctl.conf \
+	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60' >> /etc/sysctl.conf \
+	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120' >> /etc/sysctl.conf \
+	&& echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf
 
 RUN \
-echo '# Add' >> /etc/rc.local \
-echo 'echo 0 > /proc/sys/net/ipv4/tcp_syncookies' >> /etc/rc.local \
-echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
-echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
-echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
+	&& echo '# Add' >> /etc/rc.local \
+	&& echo 'echo 0 > /proc/sys/net/ipv4/tcp_syncookies' >> /etc/rc.local \
+	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
+	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
+	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
 
 # -----------------------------------------------------------------------------
 # Clear Cache
