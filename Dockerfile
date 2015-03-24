@@ -129,8 +129,8 @@ RUN	cd /home/worker/src/ \
 	&& make install  1>/dev/null \
 	&& cd /home/worker/bin \
 	&& ln -s /home/worker/python/bin/python python \
-	&& /home/worker/bin/python ez_setup.py 1>/dev/null \
-	&& /home/worker/bin/python get-pip.py 1>/dev/null \
+	&& /home/worker/bin/python /home/worker/src/ez_setup.py 1>/dev/null \
+	&& /home/worker/bin/python /home/worker/src/get-pip.py 1>/dev/null \
 	&& cd /home/worker/bin \
 	&& ln -s /home/worker/bin/easy_install easy_install \
 	&& ln -s /home/worker/bin/pip pip
