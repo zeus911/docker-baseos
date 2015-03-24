@@ -119,6 +119,8 @@ ENV HOME /home/worker
 ENV SRC_DIR ${HOME}/src
 RUN mkdir -p ${SRC_DIR} ${HOME}/bin
 RUN	cd /home/worker/src/ \
+	&& wget -q -O ez_setup.py https://bootstrap.pypa.io/ez_setup.py \
+	&& wget -q -O get-pip.py https://bootstrap.pypa.io/get-pip.py \
 	&& wget -q -O Python-2.7.9.tgz https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz \
 	&& tar xzvf Python-2.7.9.tgz \
 	&& cd Python-2.7.9 \
@@ -127,12 +129,8 @@ RUN	cd /home/worker/src/ \
 	&& make install  1>/dev/null \
 	&& cd /home/worker/bin \
 	&& ln -s /home/worker/python/bin/python python
-
-ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src/
-ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/
-RUN cd 	/home/worker/src/ \
-	&& /home/worker/bin/python /home/worker/src/ez_setup.py \
-	&& /home/worker/bin/python /home/worker/src/get-pip.py \
+	&& /home/worker/bin/python ez_setup.py 1>/dev/null \
+	&& /home/worker/bin/python get-pip.py 1>/dev/null \
 	&& cd /home/worker/bin \
 	&& ln -s /home/worker/bin/easy_install easy_install \
 	&& ln -s /home/worker/bin/pip pip
