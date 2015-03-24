@@ -124,16 +124,16 @@ ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/ \
 RUN cd /home/worker/src/ \
 	&& tar xzvf Python-2.7.9.tgz \
 	&& cd Python-2.7.9 \
-	&& ./configure --prefix=${HOME}/python \
+	&& ./configure --prefix=/home/worker/python \
 	&& make -j 8 \
 	&& make install \
-	&& cd $HOME/bin \
-	&& ln -s ${HOME}/python/bin/python python \
+	&& cd /home/worker/bin \
+	&& ln -s /home/worker/python/bin/python python \
 	&& python /home/worker/src/ez_setup.py --insecure \
 	&& python /home/worker/src/get-pip.py \
-	&& cd $HOME/bin \
-	&& ln -s ${HOME}/bin/easy_install easy_install \
-	&& ln -s ${HOME}/bin/pip pip
+	&& cd /home/worker/bin \
+	&& ln -s /home/worker/bin/easy_install easy_install \
+	&& ln -s /home/worker/bin/pip pip
 	
 # config bash_profile
 RUN echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash_profile
