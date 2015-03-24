@@ -8,8 +8,8 @@ MAINTAINER pinguoops <pinguo-ops@camera360.com>
 #RUN /usr/sbin/setenforce 0 \
 #	&& sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
 	
-ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /tmp/
-RUN rpm -Uvh /tmp/epel-release-6-8.noarch.rpm
+ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /root/
+RUN rpm -Uvh /root/epel-release-6-8.noarch.rpm
 
 RUN yum -y install \
     gcc gcc-c++ tcl mpir mpir-devel \
@@ -118,11 +118,12 @@ USER worker
 ENV HOME /home/worker
 ENV SRC_DIR ${HOME}/src
 RUN mkdir -p ${SRC_DIR} ${HOME}/bin
-ADD http://mirrors.sohu.com/python/2.7.9/Python-2.7.9.tgz ${SRC_DIR}
-ADD https://bootstrap.pypa.io/ez_setup.py ${SRC_DIR}
-ADD https://bootstrap.pypa.io/get-pip.py ${SRC_DIR}
 
-RUN cd ${SRC_DIR} \
+ADD http://mirrors.sohu.com/python/2.7.9/Python-2.7.9.tgz /home/worker/src
+ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src
+ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src
+
+RUN cd /home/worker/src \
 	&& tar xzvf Python-2.7.9.tgz \
 	&& cd Python-2.7.9 \
 	&& ./configure --prefix=${HOME}/python \
@@ -130,8 +131,8 @@ RUN cd ${SRC_DIR} \
 	&& make install \
 	&& cd $HOME/bin \
 	&& ln -s ${HOME}/python/bin/python python \
-	&& python ${SRC_DIR}/ez_setup.py --insecure \
-	&& python ${SRC_DIR}/get-pip.py \
+	&& python /home/worker/src/ez_setup.py --insecure \
+	&& python /home/worker/src/get-pip.py \
 	&& cd $HOME/bin \
 	&& ln -s ${HOME}/bin/easy_install easy_install \
 	&& ln -s ${HOME}/bin/pip pip
