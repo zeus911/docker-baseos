@@ -119,11 +119,11 @@ ENV HOME /home/worker
 ENV SRC_DIR ${HOME}/src
 RUN mkdir -p ${SRC_DIR} ${HOME}/bin
 
-ADD http://mirrors.sohu.com/python/2.7.9/Python-2.7.9.tgz /home/worker/src
-ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src
-ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src
+ADD https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz /home/worker/src/
+ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src/
+ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/
 
-RUN cd /home/worker/src \
+RUN cd /home/worker/src/ \
 	&& tar xzvf Python-2.7.9.tgz \
 	&& cd Python-2.7.9 \
 	&& ./configure --prefix=${HOME}/python \
