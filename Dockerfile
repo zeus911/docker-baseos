@@ -118,7 +118,7 @@ USER worker
 ENV HOME /home/worker
 ENV SRC_DIR ${HOME}/src
 RUN mkdir -p ${SRC_DIR} ${HOME}/bin \
-ADD https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz /home/worker/src/ \
+RUN wget -c -t 3 https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz -O /home/worker/src/ \
 ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src/ \
 ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/ \
 RUN cd /home/worker/src/ \
