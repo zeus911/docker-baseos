@@ -118,19 +118,19 @@ USER worker
 ENV HOME /home/worker
 ENV SRC_DIR ${HOME}/src
 RUN mkdir -p ${SRC_DIR} ${HOME}/bin
-
-RUN wget -c -t 3 https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz -O /home/worker/src/ \
-	&& cd /home/worker/src/ \
+RUN	cd /home/worker/src/ \
+	&& wget -q -O Python-2.7.9.tgz https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz \
 	&& tar xzvf Python-2.7.9.tgz \
 	&& cd Python-2.7.9 \
-	&& ./configure --prefix=/home/worker/python \
-	&& make \
-	&& make install \
+	&& ./configure --prefix=/home/worker/python 1>/dev/null \
+	&& make 1>/dev/null \
+	&& make install  1>/dev/null \
 	&& cd /home/worker/bin \
 	&& ln -s /home/worker/python/bin/python python
-	
-ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src/ \
-ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/ \	
+
+ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src/
+ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/
+RUN cd 	/home/worker/src/ \
 	&& /home/worker/bin/python /home/worker/src/ez_setup.py \
 	&& /home/worker/bin/python /home/worker/src/get-pip.py \
 	&& cd /home/worker/bin \
