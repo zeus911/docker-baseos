@@ -117,20 +117,22 @@ RUN useradd -m -u 1000 worker \
 USER worker
 ENV HOME /home/worker
 ENV SRC_DIR ${HOME}/src
-RUN mkdir -p ${SRC_DIR} ${HOME}/bin \
+RUN mkdir -p ${SRC_DIR} ${HOME}/bin
+
 RUN wget -c -t 3 https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz -O /home/worker/src/ \
-ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src/ \
-ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/ \
-RUN cd /home/worker/src/ \
+	&& cd /home/worker/src/ \
 	&& tar xzvf Python-2.7.9.tgz \
 	&& cd Python-2.7.9 \
 	&& ./configure --prefix=/home/worker/python \
-	&& make -j 8 \
+	&& make \
 	&& make install \
 	&& cd /home/worker/bin \
-	&& ln -s /home/worker/python/bin/python python \
-	&& python /home/worker/src/ez_setup.py --insecure \
-	&& python /home/worker/src/get-pip.py \
+	&& ln -s /home/worker/python/bin/python python
+	
+ADD https://bootstrap.pypa.io/ez_setup.py /home/worker/src/ \
+ADD https://bootstrap.pypa.io/get-pip.py /home/worker/src/ \	
+	&& /home/worker/bin/python /home/worker/src/ez_setup.py \
+	&& /home/worker/bin/python /home/worker/src/get-pip.py \
 	&& cd /home/worker/bin \
 	&& ln -s /home/worker/bin/easy_install easy_install \
 	&& ln -s /home/worker/bin/pip pip
