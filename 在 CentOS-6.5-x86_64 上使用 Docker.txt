@@ -1,0 +1,86 @@
+在 CentOS-6.5-x86_64 上使用 Docker
+
+#!/bin/echo "docker install note"
+##############
+# 安装docker #
+##############
+# kernel version 2.6.32-431 or higher needed
+# x86_64 needed
+yum install docker-io -y
+/etc/init.d/docker start
+chkconfig docker on
+docker pull centos:6.4
+# docker pull centos:latest
+docker images
+docker run --rm -i -t centos:6.4 /bin/bash
+
+########################
+# 私有仓库的建立       #
+# 可作为虚拟机模板仓库 #
+########################
+yum install docker-registry -y
+/etc/init.d/docker-registry start
+chkconfig docker-registry on
+
+########
+# 应用 #
+########
+# 下载官方镜像
+docker pull centos:6.4
+# 查看当前镜像
+docker images
+# 给镜像打标签
+docker tag <id> 192.168.200.63:5000/centos6.4
+docker images
+# 上传镜像到私有仓库
+docker push 192.168.200.63:5000/centos6.4
+# 定制镜像作为新的镜像centos6.4:new
+cat <<'EOF' >Dockerfile
+# sshd
+FROM centos:6.4
+MAINTAINER Willie <mahonzhan@sina.com>
+RUN yum install openssh openssh-server vim-enhanced -y
+RUN sed -i 's/UsePAM yes/#UsePAM yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#UsePAM no/UsePAM no/' /etc/ssh/sshd_config
+RUN echo 'root:password' | chpasswd
+RUN /etc/init.d/sshd start
+EXPOSE 22
+EOF
+docker build --rm -t centos6.4:new.
+# 连接进去进一步定制开发环境分别存为一个image
+docker run -t -i -P -v /data1:/data1 centos6.4:new /bin/bash
+docker commit -m="sshd_image" -a="mahongzhan" <container_id> centos6.4:sshd
+# 开启sshd连接：ssh root@<ip> -p 3001
+docker run -d -p 3001:22 -v /data1:/data1 --name="sshdvm1" centos6.4:sshd /usr/sbin/sshd -D
+# 若物理母机遭重启，所有容器将stop，但是数据仍得以保存，重新start即可
+docker start vm1
+# 停止虚拟机
+docker stop vm1
+# 删除虚拟机
+docker rm vm1
+
+######################
+# Web 扩展：Shipyard #
+######################
+# 安装Shipyard管理Web
+docker pull shipyard/shipyard
+# 开启 shipyard
+docker run -i -t -d -p 80:80 -p 8000:8000 shipyard/shipyard
+# 开启 shiptard-agent
+docker run -i -t -d -v /var/run/docker.sock:/docker.sock \
+-e IP=`ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{print $1;}'` \
+-e URL=http://192.168.200.62:8000 -p 4500:4500 shipyard/shipyard/agent
+
+#######################
+# docker 其他日常命令 #
+#######################
+# 导出到文件
+docker save registry >/tmp/registry.tar
+# 导入到docker
+docker load < /tmp/registry.tar
+# 重命名
+docker tag ec6705c4ac35 centos6.4:xl
+# 连接到本地控制台
+docker attach <name>
+# 退出本地控制台而不停止容器
+按 CTRL+P 后松开P再按Q

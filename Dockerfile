@@ -114,6 +114,14 @@ RUN useradd -m -u 1000 worker \
 # -----------------------------------------------------------------------------
 USER worker
 ENV HOME /home/worker
+# config bash_profile
+RUN echo 'export PATH=$HOME/bin:$PATH' >> ${HOME}/.bash_profile \
+	&& echo 'export PATH' >> ${HOME}/.bash_profile \
+	&& echo '# PYTHON HOME' >> ${HOME}/.bash_profile \
+	&& echo 'PYTHON_HOME=/home/worker/python/bin' >> ${HOME}/.bash_profile \
+	&& echo 'PATH=$PYTHON_HOME:$PATH' >> ${HOME}/.bash_profile \
+	&& echo 'export PATH' >> ${HOME}/.bash_profile
+	
 RUN mkdir -p ${HOME}/bin ${HOME}/src \
 	&& cd ${HOME}/src/ \
 	&& wget -q -O setuptools-14.3.1.tar.gz https://pypi.python.org/packages/source/s/setuptools/setuptools-14.3.1.tar.gz \
@@ -138,13 +146,6 @@ RUN mkdir -p ${HOME}/bin ${HOME}/src \
 	&& ${HOME}/python/bin/python setup.py install 1>/dev/null \
 	&& cd ${HOME}/bin \
 	&& ln -s /home/worker/bin/pip pip
-	
-# config bash_profile
-RUN echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash_profile \
-	&& echo 'export PATH=$HOME/bin:$PATH' >> ${HOME}/.bash_profile \
-	&& echo 'PYTHON_HOME=/home/worker/python/bin' >> ${HOME}/.bash_profile \
-	&& echo 'PATH=\$PYTHON_HOME:\$PATH' >> ${HOME}/.bash_profile \
-	&& echo 'export PATH' >> ${HOME}/.bash_profile
 	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
