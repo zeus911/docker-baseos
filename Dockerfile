@@ -89,12 +89,7 @@ RUN mv /etc/sysctl.conf /etc/sysctl.conf.bak \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120' >> /etc/sysctl.conf \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60' >> /etc/sysctl.conf \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120' >> /etc/sysctl.conf \
-	&& echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf \
-	&& echo '# Add' >> /etc/rc.local \
-	&& echo 'echo 0 > /proc/sys/net/ipv4/tcp_syncookies' >> /etc/rc.local \
-	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
-	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
-	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
+	&& echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf
 
 # -----------------------------------------------------------------------------
 # Clear Cache
@@ -116,32 +111,42 @@ RUN useradd -m -u 1000 worker \
 # -----------------------------------------------------------------------------
 USER worker
 ENV HOME /home/worker
-ENV SRC_DIR ${HOME}/src
-RUN mkdir -p ${SRC_DIR} ${HOME}/bin
-RUN	cd /home/worker/src/ \
-	&& wget -q -O ez_setup.py https://bootstrap.pypa.io/ez_setup.py \
-	&& wget -q -O get-pip.py https://bootstrap.pypa.io/get-pip.py \
+RUN mkdir -p ${HOME}/bin ${HOME}/src
+RUN	cd ${HOME}/src/ \
+	&& wget -q -O setuptools-14.3.1.tar.gz https://pypi.python.org/packages/source/s/setuptools/setuptools-14.3.1.tar.gz \
+	&& wget -q -O pip-6.0.8.tar.gz https://pypi.python.org/packages/source/p/pip/pip-6.0.8.tar.gz \
 	&& wget -q -O Python-2.7.9.tgz https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz \
-	&& tar xzvf Python-2.7.9.tgz \
+	&& tar xzvf Python-2.7.9.tgz 1>/dev/null \
 	&& cd Python-2.7.9 \
-	&& ./configure --prefix=/home/worker/python 1>/dev/null \
+	&& ./configure --prefix=${HOME}/python 1>/dev/null \
 	&& make 1>/dev/null \
 	&& make install  1>/dev/null \
-	&& cd /home/worker/bin \
-	&& ln -s /home/worker/python/bin/python python \
-	&& /home/worker/bin/python /home/worker/src/ez_setup.py 1>/dev/null \
-	&& /home/worker/bin/python /home/worker/src/get-pip.py 1>/dev/null \
-	&& cd /home/worker/bin \
-	&& ln -s /home/worker/bin/easy_install easy_install \
+	&& cd ${HOME}/bin \
+	&& ln -s ${HOME}/python/bin/python python \
+	&& cd ${HOME}/src/ \
+	&& tar xzvf setuptools-14.3.1.tar.gz 1>/dev/null \
+	&& cd setuptools-14.3.1 \
+	&& ${HOME}/python/bin/python setup.py install 1>/dev/null \
+	&& cd ${HOME}/bin \
+	&& ln -s ${HOME}/bin/easy_install easy_install \
+	&& cd ${HOME}/src/ \
+	&& tar xzvf pip-6.0.8.tar.gz 1>/dev/null \
+	&& cd pip-6.0.8 \
+	&& ${HOME}/python/bin/python setup.py install 1>/dev/null \
+	&& cd ${HOME}/bin \
 	&& ln -s /home/worker/bin/pip pip
-	
+
 # config bash_profile
-RUN echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash_profile
-RUN sed -i 's#PATH=\$PATH:\$HOME\/bin#export PATH=\$HOME\/bin:\$PATH#' ${HOME}/.bash_profile \
-	&& echo '# PYTHON HOME' >> ${HOME}/.bash_profile \
+ENTRYPOINT echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash_profile \
+	&& echo 'export PATH=$HOME/bin:$PATH' >> ${HOME}/.bash_profile \
 	&& echo 'PYTHON_HOME=/home/worker/python/bin' >> ${HOME}/.bash_profile \
 	&& echo 'PATH=\$PYTHON_HOME:\$PATH' >> ${HOME}/.bash_profile \
-	&& echo 'export PATH' >> ${HOME}/.bash_profile
+	&& echo 'export PATH' >> ${HOME}/.bash_profile \
+	&& echo '# Add' >> /etc/rc.local \
+	&& echo 'echo 0 > /proc/sys/net/ipv4/tcp_syncookies' >> /etc/rc.local \
+	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
+	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
+	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
 	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
