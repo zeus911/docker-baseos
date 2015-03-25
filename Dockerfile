@@ -8,11 +8,8 @@ MAINTAINER pinguoops <pinguo-ops@camera360.com>
 #RUN /usr/sbin/setenforce 0 \
 #	&& sed -i '/SELINUX/s/enforcing/disabled/' /etc/selinux/config
 	
-ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /root/
-RUN rpm -Uvh /root/epel-release-6-8.noarch.rpm
-
-
-RUN yum -y groupinstall "Development tools" 
+ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /tmp/
+RUN rpm -Uvh /tmp/epel-release-6-8.noarch.rpm 
 
 RUN yum -y install \
     gcc gcc-c++ make patch autoconf tcl mpir mpir-devel \
@@ -108,6 +105,9 @@ RUN useradd -m -u 1000 worker \
     && echo "worker" | passwd --stdin worker \
     && echo 'worker  ALL=(ALL)  NOPASSWD: ALL' > /etc/sudoers.d/worker
 
+	
+	
+	
 # -----------------------------------------------------------------------------
 # change user and make initials install python2.7.9
 # -----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ RUN mkdir -p ${HOME}/bin ${HOME}/src \
 	&& ln -s /home/worker/bin/pip pip
 	
 # config bash_profile
-ENTRYPOINT echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash_profile \
+RUN echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash_profile \
 	&& echo 'export PATH=$HOME/bin:$PATH' >> ${HOME}/.bash_profile \
 	&& echo 'PYTHON_HOME=/home/worker/python/bin' >> ${HOME}/.bash_profile \
 	&& echo 'PATH=\$PYTHON_HOME:\$PATH' >> ${HOME}/.bash_profile \
@@ -149,6 +149,6 @@ ENTRYPOINT echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME
 	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
 	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
 	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
-
+	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
