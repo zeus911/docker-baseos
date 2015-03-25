@@ -139,13 +139,13 @@ RUN mkdir -p ${HOME}/bin ${HOME}/src \
 	&& cd setuptools-14.3.1 \
 	&& ${HOME}/python/bin/python setup.py install 1>/dev/null \
 	&& cd ${HOME}/bin \
-	&& ln -s ${HOME}/bin/easy_install easy_install \
+	&& ln -s ${HOME}/python/bin/easy_install easy_install \
 	&& cd ${HOME}/src/ \
 	&& tar xzvf pip-6.0.8.tar.gz 1>/dev/null \
 	&& cd pip-6.0.8 \
 	&& ${HOME}/python/bin/python setup.py install 1>/dev/null \
 	&& cd ${HOME}/bin \
-	&& ln -s /home/worker/bin/pip pip
+	&& ln -s /home/worker/python/bin/pip pip
 	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
