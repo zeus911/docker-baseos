@@ -11,6 +11,9 @@ MAINTAINER pinguoops <pinguo-ops@camera360.com>
 ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /root/
 RUN rpm -Uvh /root/epel-release-6-8.noarch.rpm
 
+
+RUN yum -y groupinstall "Development tools" 
+
 RUN yum -y install \
     gcc gcc-c++ make patch autoconf tcl mpir mpir-devel \
     tar wget git vim screen unzip \
