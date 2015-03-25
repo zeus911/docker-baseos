@@ -16,8 +16,6 @@ RUN yum -y install \
     tar wget git vim screen unzip \
     openssh-server openssh sudo file
 	
-RUN yum -y update bash openssl
-
 RUN yum -y install \
     gd gd-devel libjpeg libjpeg-devel libpng libpng-devel curl \
     freetype freetype-devel libtool libtool-ltdl libtool-ltdl-devel \
@@ -28,6 +26,7 @@ RUN yum -y install \
     libmcrypt libmcrypt-devel freetds freetds-devel \
     ImageMagick ImageMagick-devel pcre pcre-devel m4
 
+RUN yum -y update bash openssl glibc
 
 # -----------------------------------------------------------------------------
 # Configure, timezone/sshd/passwd/networking
@@ -52,14 +51,12 @@ RUN	sed -i "/# End of file/i\\* soft nofile 65536" /etc/security/limits.conf \
 	&& sed -i "/# End of file/i\\* hard nproc 10240" /etc/security/limits.conf \
 	&& sed -i "s/^\(*          soft    nproc     1024\)/#\1/" /etc/security/limits.d/90-nproc.conf	
 		
-
 # config time service
 RUN yum -y install ntp \
 	&& chkconfig --level 345 ntpd on \
 	&& chkconfig --level 345 ntpdate off \
 	&& /sbin/service ntpd start \
 	&& /sbin/service ntpdate stop
-
 
 RUN mv /etc/sysctl.conf /etc/sysctl.conf.bak \
 	&& echo '# Optimization kernel' > /etc/sysctl.conf \
@@ -137,7 +134,7 @@ RUN mkdir -p ${HOME}/bin ${HOME}/src \
 	&& ${HOME}/python/bin/python setup.py install 1>/dev/null \
 	&& cd ${HOME}/bin \
 	&& ln -s /home/worker/bin/pip pip
-
+	
 # config bash_profile
 ENTRYPOINT echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash_profile \
 	&& echo 'export PATH=$HOME/bin:$PATH' >> ${HOME}/.bash_profile \
@@ -150,13 +147,5 @@ ENTRYPOINT echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME
 	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
 	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
 
-
-# -----------------------------------------------------------------------------
-# Clear Cache
-# -----------------------------------------------------------------------------
-RUN rm -rvf /var/cache/{yum,ldconfig}/* \
-    && rm -rvf /etc/ld.so.cache \
-    && rm -rvf /tmp/* \
-    && yum clean all	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
