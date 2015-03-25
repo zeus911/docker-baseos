@@ -12,9 +12,11 @@ ADD http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm  /
 RUN rpm -Uvh /root/epel-release-6-8.noarch.rpm
 
 RUN yum -y install \
-    gcc gcc-c++ tcl mpir mpir-devel \
+    gcc gcc-c++ make patch autoconf tcl mpir mpir-devel \
     tar wget git vim screen unzip \
     openssh-server openssh sudo file
+	
+RUN yum -y update bash openssl
 
 RUN yum -y install \
     gd gd-devel libjpeg libjpeg-devel libpng libpng-devel curl \
@@ -111,14 +113,14 @@ RUN useradd -m -u 1000 worker \
 # -----------------------------------------------------------------------------
 USER worker
 ENV HOME /home/worker
-RUN mkdir -p ${HOME}/bin ${HOME}/src
-RUN	cd ${HOME}/src/ \
+RUN mkdir -p ${HOME}/bin ${HOME}/src \
+	&& cd ${HOME}/src/ \
 	&& wget -q -O setuptools-14.3.1.tar.gz https://pypi.python.org/packages/source/s/setuptools/setuptools-14.3.1.tar.gz \
 	&& wget -q -O pip-6.0.8.tar.gz https://pypi.python.org/packages/source/p/pip/pip-6.0.8.tar.gz \
 	&& wget -q -O Python-2.7.9.tgz https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tgz \
 	&& tar xzvf Python-2.7.9.tgz 1>/dev/null \
 	&& cd Python-2.7.9 \
-	&& ./configure --prefix=${HOME}/python 1>/dev/null \
+	&& CXX=g++ ./configure --prefix=${HOME}/python 1>/dev/null \
 	&& make 1>/dev/null \
 	&& make install  1>/dev/null \
 	&& cd ${HOME}/bin \
@@ -147,6 +149,14 @@ ENTRYPOINT echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME
 	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
 	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
 	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
-	
+
+
+# -----------------------------------------------------------------------------
+# Clear Cache
+# -----------------------------------------------------------------------------
+RUN rm -rvf /var/cache/{yum,ldconfig}/* \
+    && rm -rvf /etc/ld.so.cache \
+    && rm -rvf /tmp/* \
+    && yum clean all	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
