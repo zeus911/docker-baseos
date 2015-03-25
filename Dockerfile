@@ -146,6 +146,6 @@ RUN mkdir -p ${HOME}/bin ${HOME}/src \
 	&& ${HOME}/python/bin/python setup.py install 1>/dev/null \
 	&& cd ${HOME}/bin \
 	&& ln -s /home/worker/python/bin/pip pip
-	
+USER root	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
