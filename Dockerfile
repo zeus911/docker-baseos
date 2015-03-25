@@ -88,8 +88,12 @@ RUN mv /etc/sysctl.conf /etc/sysctl.conf.bak \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_time_wait = 120' >> /etc/sysctl.conf \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_close_wait = 60' >> /etc/sysctl.conf \
 	&& echo 'net.netfilter.nf_conntrack_tcp_timeout_fin_wait = 120' >> /etc/sysctl.conf \
-	&& echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf
-
+	&& echo 'vm.zone_reclaim_mode = 1' >> /etc/sysctl.conf \
+	&& echo '# Add' >> /etc/rc.local \
+	&& echo 'echo 0 > /proc/sys/net/ipv4/tcp_syncookies' >> /etc/rc.local \
+	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
+	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
+	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
 # -----------------------------------------------------------------------------
 # Clear Cache
 # -----------------------------------------------------------------------------
@@ -105,9 +109,6 @@ RUN useradd -m -u 1000 worker \
     && echo "worker" | passwd --stdin worker \
     && echo 'worker  ALL=(ALL)  NOPASSWD: ALL' > /etc/sudoers.d/worker
 
-	
-	
-	
 # -----------------------------------------------------------------------------
 # change user and make initials install python2.7.9
 # -----------------------------------------------------------------------------
@@ -143,12 +144,7 @@ RUN echo 'sudo sh -c "echo 0 > /proc/sys/vm/zone_reclaim_mode"' >> ${HOME}/.bash
 	&& echo 'export PATH=$HOME/bin:$PATH' >> ${HOME}/.bash_profile \
 	&& echo 'PYTHON_HOME=/home/worker/python/bin' >> ${HOME}/.bash_profile \
 	&& echo 'PATH=\$PYTHON_HOME:\$PATH' >> ${HOME}/.bash_profile \
-	&& echo 'export PATH' >> ${HOME}/.bash_profile \
-	&& echo '# Add' >> /etc/rc.local \
-	&& echo 'echo 0 > /proc/sys/net/ipv4/tcp_syncookies' >> /etc/rc.local \
-	&& echo 'echo 0 > /proc/sys/vm/zone_reclaim_mode' >> /etc/rc.local \
-	&& echo 'echo no > /sys/kernel/mm/redhat_transparent_hugepage/khugepaged/defrag' >> /etc/rc.local \
-	&& echo 'echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag' >> /etc/rc.local
+	&& echo 'export PATH' >> ${HOME}/.bash_profile
 	
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
